@@ -1,0 +1,38 @@
+hosts: lb become: yes tasks:
+name: Install HAProxy
+yum:
+name: haproxy
+state: present
+
+name: Configure HAProxy
+file:
+path: /etc/haproxy/haproxy.cfg
+content: |
+global
+log /dev/log local0
+log /dev/log local1 notice
+chroot /var/lib/haproxy
+user haproxy
+group haproxy
+daemon
+
+  maxconn 4096
+
+defaults
+  log global
+  mode http
+  option httplog
+  option dontlognull
+  option redispatch
+  retries 3
+  balance roundrobin
+
+listen stats
+  bind :8080
+  stats enable
+  stats uri /stats
+
+listen 80
+  bind :80
+  server web1 192.168.1.10:80 weight 1 maxconn 200
+  server web2 192.168.1.11:80 weight 1 maxconn 200
