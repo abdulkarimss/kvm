@@ -1,0 +1,20 @@
+hosts: dhcp become: yes tasks:
+name: Install DHCP server
+yum:
+name: dhcp
+state: present
+
+name: Configure DHCP server
+file:
+path: /etc/dhcp/dhcpd.conf
+content: |
+ddns-update-style none;
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.10 192.168.1.20;
+}
+name: Start DHCP server
+service:
+name: dhcpd
+state: started
+enabled: yes
