@@ -3,3 +3,5 @@
   template:
     src:  templates/bare-metal/install-config-yaml.j2
     dest: "{{ files.base }}/conf/install-config.yaml"
+hosts: bastion become: yes tasks:
+name: Install OC client command: oc adm oc-client install --dest ~/
